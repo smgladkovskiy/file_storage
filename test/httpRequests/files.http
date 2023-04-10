@@ -1,0 +1,33 @@
+### Send PUT request with file attachment
+PUT {{host}}/file
+Content-Type: multipart/form-data
+Content-Disposition: form-data; name="example"; filename="example.pdf"
+
+< example.pdf
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+
+    client.global.set("file_id", response.body.fileID);
+%}
+
+### Send GET request for file ID
+GET {{host}}/file/{{file_id}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Response content-type is application/octet-stream", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/octet-stream", "Expected 'application/octet-stream' but received '" + type + "'");
+    });
+%}

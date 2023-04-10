@@ -1,0 +1,62 @@
+openapi: 3.0.1
+info:
+  title: Echo Swagger App API
+  description: Storage App API
+  contact: { }
+  version: "1.0"
+paths:
+  /file:
+    put:
+      summary: Put new file
+      description: Add new file to store
+      tags:
+        - File
+      requestBody:
+        content:
+          application/octet-stream:
+            # any media type is accepted, functionally equivalent to `*/*`
+            schema:
+              # a binary file of any type
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fileID:
+                    type: string
+                    format: uuid
+                    description: file ID
+                required:
+                  - fileID
+              examples:
+                response_200:
+                  value:
+                    fileID: "ceee22fc-7be1-4bf6-876d-9f14eb1304d8"
+  /file/{fileID}:
+    get:
+      summary: Get file by ID
+      description: Returns file by its ID
+      tags:
+        - File
+      parameters:
+        - name: fileID
+          in: path
+          description: Unique File ID
+          required: true
+          style: simple
+          schema:
+            format: uuid
+            type: string
+      responses: 
+        '200':
+          description: Success
+          content:
+            application/binary:
+              schema:
+                type: string
+                format: binary
